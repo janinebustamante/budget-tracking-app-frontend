@@ -5,6 +5,7 @@ import { Container } from "react-bootstrap";
 import NaviBar from "../components/NaviBar";
 import { UserProvider } from "../UserContext";
 import { CategoryProvider } from "../CategoryContext";
+import { RecordProvider } from "../RecordContext";
 import AppHelper from "../app-helper";
 import Router from "next/router";
 
@@ -12,7 +13,9 @@ function MyApp({ Component, pageProps }) {
   const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [records, setRecords] = useState([]);
 
+  //for logout
   const unsetUser = () => {
     localStorage.removeItem("token");
 
@@ -68,6 +71,7 @@ function MyApp({ Component, pageProps }) {
     }
   }, [accessToken]);
 
+  //adding categories
   const addCategory = async ({ categoryType, categoryName }) => {
     const res = await fetch(`${AppHelper.API_URL}/categories`, {
       method: "POST",
@@ -90,14 +94,56 @@ function MyApp({ Component, pageProps }) {
     }
   };
 
+  //set records when access token changes
+  useEffect(() => {
+    if (accessToken !== null) {
+      fetch(`${AppHelper.API_URL}/records`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setRecords(data);
+        });
+    }
+  }, [accessToken]);
+
+  //adding records
+  const addRecord = async ({ categoryId, description, amount, createdOn }) => {
+    const res = await fetch(`${AppHelper.API_URL}/records`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        categoryId,
+        description,
+        amount,
+        createdOn,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setRecords([...records, data]);
+    } else {
+      throw new Error(`Failed to create a record: ${data.err}`);
+    }
+  };
+
   return (
     <React.Fragment>
       <UserProvider value={{ user, unsetUser, setAccessToken }}>
         <CategoryProvider value={{ categories, addCategory }}>
-          <NaviBar />
-          <Container>
-            <Component {...pageProps} />
-          </Container>
+          <RecordProvider value={{ records, addRecord }}>
+            <NaviBar />
+            <Container>
+              <Component {...pageProps} />
+            </Container>
+          </RecordProvider>
         </CategoryProvider>
       </UserProvider>
     </React.Fragment>
