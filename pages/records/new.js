@@ -1,6 +1,6 @@
 import Router from "next/router";
 import React, { useContext, useState, useEffect } from "react";
-import { Container, Button, Form } from "react-bootstrap";
+import { Container, Button, Form, Card } from "react-bootstrap";
 import moment from "moment";
 import RecordContext from "../../RecordContext";
 import CategoryContext from "../../CategoryContext";
@@ -25,7 +25,8 @@ export default function index() {
 
   return (
     <Container>
-      <h3>Add New Record</h3>
+      <br />
+      <br />
       <AddRecord onAdd={handleOnAdd} categories={categories} />
     </Container>
   );
@@ -74,55 +75,64 @@ const AddRecord = ({ onAdd, categories }) => {
   console.log(categoryId);
 
   return (
-    <Form onSubmit={onSubmit}>
-      <Form.Group controlId="categoryType">
-        <Form.Label>Category Type: </Form.Label>
-        <Form.Control
-          as="select"
-          onChange={(e) => setCategoryType(e.target.value)}
-          defaultValue="choose"
-        >
-          <option value="choose" disabled>
-            Choose..
-          </option>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </Form.Control>
-      </Form.Group>
-      <Form.Group controlId="categoryName">
-        <Form.Label>Category Name: </Form.Label>
-        <Form.Control
-          as="select"
-          onChange={(e) => setCategoryName(e.target.value)}
-          defaultValue="choose"
-        >
-          <option value="choose" disabled>
-            Choose..
-          </option>
-          {categoryBasedOnType}
-        </Form.Control>
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Amount: </Form.Label>
-        <Form.Control
-          type="number"
-          placeholder="0"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Description: </Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Add
-      </Button>
-    </Form>
+    <Card>
+      <Card.Header>
+        <h3>Create New Record</h3>
+      </Card.Header>
+      <Card.Body>
+        <Card.Text>
+          <Form onSubmit={onSubmit}>
+            <Form.Group controlId="categoryType">
+              <Form.Label>Category Type: </Form.Label>
+              <Form.Control
+                as="select"
+                onChange={(e) => setCategoryType(e.target.value)}
+                defaultValue="choose"
+              >
+                <option value="choose" disabled>
+                  Choose..
+                </option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </Form.Control>
+            </Form.Group>
+            <Form.Group controlId="categoryName">
+              <Form.Label>Category Name: </Form.Label>
+              <Form.Control
+                as="select"
+                onChange={(e) => setCategoryName(e.target.value)}
+                defaultValue="choose"
+              >
+                <option value="choose" disabled>
+                  Choose..
+                </option>
+                {categoryBasedOnType}
+              </Form.Control>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Amount: </Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="0"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Description: </Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Add
+            </Button>
+          </Form>
+        </Card.Text>
+      </Card.Body>
+    </Card>
   );
 };

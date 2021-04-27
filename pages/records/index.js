@@ -1,29 +1,126 @@
 import React, { useContext, useState, useEffect } from "react";
 import Router from "next/router";
-import { InputGroup, Button, Form, Card, Row, Col } from "react-bootstrap";
+import {
+  Container,
+  InputGroup,
+  Button,
+  Form,
+  Card,
+  Row,
+  Col,
+  Badge,
+} from "react-bootstrap";
 import RecordContext from "../../RecordContext";
 import CategoryContext from "../../CategoryContext";
 import moment from "moment";
 
 export default function index() {
   const { records } = useContext(RecordContext);
-  const { categories } = useContext(CategoryContext);
+  const { categories, incomeCategoryIds, expenseCategoryIds } = useContext(
+    CategoryContext
+  );
 
   return (
-    <React.Fragment>
-      <RecordControl />
-      <Record records={records} categories={categories} />
-    </React.Fragment>
+    <Container className="mt-5 pt-4 mb-5 container">
+      <h3>Records</h3>
+      <Record
+        records={records}
+        categories={categories}
+        incomeCategoryIds={incomeCategoryIds}
+        expenseCategoryIds={expenseCategoryIds}
+      />
+    </Container>
   );
 }
 
-const RecordControl = () => {
+const Record = ({
+  records,
+  categories,
+  incomeCategoryIds,
+  expenseCategoryIds,
+}) => {
+  const [recordsToShow, setRecordsToShow] = useState(records);
+
   const [searchName, setSearchName] = useState("");
-  console.log(searchName);
+  // console.log(searchName);
+  const [typeSelected, setTypeSelected] = useState("all");
+
+  //total balance
+  const [currentBalance, setCurrentBalance] = useState(0);
+  // console.log(currentBalance);
+
+  //get categoryType and categoryName of the same categoryId
+  const getCategory = (categoryId) => {
+    return categories.find((c) => c._id === categoryId);
+  };
+
+  useEffect(() => {
+    let categoryIds = [];
+
+    if (typeSelected === "all") {
+      categoryIds = categories.map((category) => category._id);
+    } else if (typeSelected === "income") {
+      categoryIds = categories
+        .filter((category) => category.categoryType === "income")
+        .map((category) => category._id);
+    } else if (typeSelected === "expense") {
+      categoryIds = categories
+        .filter((category) => category.categoryType === "expense")
+        .map((category) => category._id);
+    }
+
+    console.log(categoryIds);
+    let newRecordsToShow = records.filter((record) => {
+      return categoryIds.includes(record.categoryId);
+    });
+
+    if (searchName !== "") {
+      newRecordsToShow = newRecordsToShow.filter((record) => {
+        return record.description
+          .toLowerCase()
+          .includes(searchName.toLowerCase());
+      });
+    }
+
+    // console.log(newRecordsToShow);
+
+    //function to sort records by createdOn
+    function compare(a, b) {
+      if (a.createdOn < b.createdOn) {
+        return 1;
+      }
+      if (a.createdOn > b.createdOn) {
+        return -1;
+      }
+      return 0;
+    }
+    //sort newRecordsToShow
+    newRecordsToShow = newRecordsToShow.sort(compare);
+
+    setRecordsToShow(newRecordsToShow);
+  }, [records, categories, typeSelected, searchName]);
+
+  //for balance
+  useEffect(() => {
+    let newCurrentBalance = 0;
+    records.forEach((r) => {
+      if (incomeCategoryIds.includes(r.categoryId)) {
+        newCurrentBalance = newCurrentBalance + r.amount;
+      } else {
+        newCurrentBalance = newCurrentBalance - r.amount;
+      }
+    });
+    setCurrentBalance(newCurrentBalance);
+  }, [records, categories]);
 
   return (
     <React.Fragment>
-      <h3>Records</h3>
+      <h5 className="text-right">
+        Current Wallet Balance:{" "}
+        <Badge variant="success justify-content-right">
+          &#8369;{currentBalance}
+        </Badge>
+      </h5>
       <InputGroup className="mb-3">
         <InputGroup.Prepend>
           <Button
@@ -39,57 +136,52 @@ const RecordControl = () => {
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
         />
-        <Form.Control as="select" defaultValue="categoryType">
-          <option value="categoryType" disabled>
-            Category Type
+        <Form.Control
+          as="select"
+          onChange={(e) => setTypeSelected(e.target.value)}
+        >
+          <option disabled>Category Type</option>
+          <option
+            value="all"
+            onChange={(e) => setTypeSelected(e.target.value)}
+            default
+          >
+            All
           </option>
-          <option value="all">All</option>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
+          <option
+            value="income"
+            onChange={(e) => setTypeSelected(e.target.value)}
+          >
+            Income
+          </option>
+          <option
+            value="expense"
+            onChange={(e) => setTypeSelected(e.target.value)}
+          >
+            Expense
+          </option>
         </Form.Control>
       </InputGroup>
-    </React.Fragment>
-  );
-};
-
-const Record = ({ records, categories }) => {
-  const [recordsToShow, setRecordsToShow] = useState(records);
-  const [categoriesToShow, setCategoriesToShow] = useState(categories);
-
-  useEffect(() => {
-    setRecordsToShow(records);
-  }, [records]);
-
-  useEffect(() => {
-    setCategoriesToShow(categories);
-  }, [categories]);
-
-  // console.log(categoriesToShow);
-
-  //get categoryType and categoryName of the same categoryId
-  const getCategory = (categoryId) => {
-    return categoriesToShow.find((c) => c._id === categoryId);
-  };
-
-  return (
-    <React.Fragment>
       {recordsToShow.map((record) => {
         const category = getCategory(record.categoryId);
         return (
-          <Card key={record._id}>
+          <Card className="mt-3" key={record._id}>
+            <Card.Header>{category.categoryType}</Card.Header>
             <Card.Body>
               <Row>
                 <Col>
                   <Card.Title>{record.description}</Card.Title>
-                  <Card.Text>
-                    {category.categoryName} ({category.categoryType})
-                  </Card.Text>
+                  <Card.Text>{category.categoryName}</Card.Text>
                   <Card.Text>
                     {moment(record.createdOn).format("MMMM DD, YYYY")}
                   </Card.Text>
                 </Col>
-                <Col>
-                  <Card.Text className="text-right">{record.amount}</Card.Text>
+                <Col className="text-right">
+                  {category.categoryType === "income" ? (
+                    <Card.Text>+{record.amount}</Card.Text>
+                  ) : (
+                    <Card.Text>-{record.amount}</Card.Text>
+                  )}
                 </Col>
               </Row>
             </Card.Body>
@@ -97,5 +189,13 @@ const Record = ({ records, categories }) => {
         );
       })}
     </React.Fragment>
+  );
+};
+
+const Balance = () => {
+  return (
+    <div>
+      <label></label>
+    </div>
   );
 };

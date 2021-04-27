@@ -7,9 +7,12 @@ export default function index() {
   const { categories } = useContext(CategoryContext);
 
   return (
-    <Container>
+    <Container className="mt-5 pt-4 mb-5 container">
       <h3>Categories</h3>
-      <Button variant="primary" onClick={() => Router.push("/categories/new")}>
+      <Button
+        variant="primary mb-3"
+        onClick={() => Router.push("/categories/new")}
+      >
         Add
       </Button>
       <CategoryTable categories={categories} />

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Container, Form, Button, Row, Col } from "react-bootstrap";
+import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
 import View from "../../components/View";
 import UserContext from "../../UserContext";
 import AppHelper from "../../app-helper";
@@ -11,7 +11,6 @@ export default function index() {
     <View title={"Login"}>
       <Row className="justify-content-center">
         <Col xs md="6">
-          <h3>Login</h3>
           <LoginForm />
         </Col>
       </Row>
@@ -105,51 +104,62 @@ const LoginForm = () => {
 
   return (
     <Container>
-      <Form onSubmit={(e) => authenticate(e)}>
-        <Form.Group>
-          <Form.Label>Email: </Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Password: </Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
-        {isActive ? (
-          <Button variant="primary" type="submit" className="mb-2" block>
-            Login
+      <Card>
+        <Card.Header>
+          <h3 className="text-center text-muted">Budget Buddy</h3>
+        </Card.Header>
+        <Card.Body>
+          <Form onSubmit={(e) => authenticate(e)}>
+            <Form.Group>
+              <Form.Label>Email: </Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Password: </Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </Form.Group>
+            {isActive ? (
+              <Button variant="primary" type="submit" className="mb-2" block>
+                Login
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                type="submit"
+                className="mb-2"
+                block
+                disabled
+              >
+                Login
+              </Button>
+            )}
+            <GoogleLogin
+              clientId="504512501279-8obbvng58inovbmmb3kldik1p3r4q3a2.apps.googleusercontent.com"
+              buttonText="Login"
+              onSuccess={authenticateGoogleToken}
+              onFailure={authenticateGoogleToken}
+              cookiePolicy={"single_host_origin"}
+              className="w-100 text-center d-flex justify-content-center"
+            />
+          </Form>
+          <hr />
+          <Button href="/register" block variant="success">
+            Create New Account
           </Button>
-        ) : (
-          <Button
-            variant="primary"
-            type="submit"
-            className="mb-2"
-            block
-            disabled
-          >
-            Login
-          </Button>
-        )}
-        <GoogleLogin
-          clientId="504512501279-8obbvng58inovbmmb3kldik1p3r4q3a2.apps.googleusercontent.com"
-          buttonText="Login"
-          onSuccess={authenticateGoogleToken}
-          onFailure={authenticateGoogleToken}
-          cookiePolicy={"single_host_origin"}
-          className="w-100 text-center d-flex justify-content-center"
-        />
-      </Form>
+        </Card.Body>
+      </Card>
     </Container>
   );
 };

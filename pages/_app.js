@@ -15,6 +15,9 @@ function MyApp({ Component, pageProps }) {
   const [categories, setCategories] = useState([]);
   const [records, setRecords] = useState([]);
 
+  const [incomeCategoryIds, setIncomeCategoryIds] = useState([]);
+  const [expenseCategoryIds, setExpenseCategoryIds] = useState([]);
+
   //for logout
   const unsetUser = () => {
     localStorage.removeItem("token");
@@ -134,10 +137,35 @@ function MyApp({ Component, pageProps }) {
     }
   };
 
+  //category ids with income and expense
+  useEffect(() => {
+    // console.log(categories);
+    let incomeIds = [];
+    let expenseIds = [];
+    categories.map((category) => {
+      if (category.categoryType === "income") {
+        incomeIds.push(category._id);
+      } else if (category.categoryType === "expense") {
+        expenseIds.push(category._id);
+      }
+      setIncomeCategoryIds(incomeIds);
+      setExpenseCategoryIds(expenseIds);
+    });
+  }, [categories]);
+  // console.log(incomeCategoryIds);
+  // console.log(expenseCategoryIds);
+
   return (
     <React.Fragment>
       <UserProvider value={{ user, unsetUser, setAccessToken }}>
-        <CategoryProvider value={{ categories, addCategory }}>
+        <CategoryProvider
+          value={{
+            categories,
+            addCategory,
+            incomeCategoryIds,
+            expenseCategoryIds,
+          }}
+        >
           <RecordProvider value={{ records, addRecord }}>
             <NaviBar />
             <Container>
