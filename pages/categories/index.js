@@ -38,8 +38,12 @@ const CategoryTable = ({ categories }) => {
       <tbody>
         {categoriesToShow.map((category) => (
           <tr key={category._id}>
-            <td>{category.categoryType}</td>
-            <td>{category.categoryName}</td>
+            <td style={{ textTransform: "capitalize" }}>
+              {category.categoryType}
+            </td>
+            <td style={{ textTransform: "capitalize" }}>
+              {category.categoryName}
+            </td>
           </tr>
         ))}
       </tbody>

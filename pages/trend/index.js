@@ -1,37 +1,76 @@
 import { Container, Row, Col, Form } from "react-bootstrap";
 import { Line } from "react-chartjs-2";
-import React, { useContext, useState, useEffect } from "react";
-import AppHelper from "../../app-helper";
+import { useContext, useState, useEffect } from "react";
+// import AppHelper from "../../app-helper";
 import moment from "moment";
 import RecordContext from "../../RecordContext";
-import CategoryContext from "../../CategoryContext";
+import { groupBy } from "lodash";
 
 export default function index() {
-  const { records } = useContext(RecordContext);
-  console.log(records);
+  const { balances } = useContext(RecordContext);
+  const [filteredBalances, setFilteredBalances] = useState([]);
 
-  const [startDate, setStartDate] = useState([]);
-  console.log(startDate);
-  const [endDate, setEndDate] = useState([]);
-  console.log(endDate);
-  // const [filteredRecord, setFilteredRecord] = useState([]);
-  // console.log(filteredRecord);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const dateFmt = "YYYY-MM-DD";
 
-  // useEffect(() => {
-  //   const recordFilter = records.filter((r) => {
-  //     if (
-  //       moment(r.createdOn).format("YYYY-MM-DD") >= startDate &&
-  //       moment(r.createdOn).format("YYYY-MM-DD") <= endDate
-  //     ) {
-  //       return r;
-  //     }
-  //   });
-  //   setFilteredRecord(recordFilter);
-  // }, [records, startDate, endDate]);
+  useEffect(() => {
+    const groupedBalancesPerDay = groupBy(balances, (balance) => {
+      return moment(balance.createdOn).format(dateFmt);
+    });
+
+    const lastBalancePerDay = Object.values(groupedBalancesPerDay).map(
+      (balances) => balances[balances.length - 1]
+    );
+
+    const newFilteredBalances = lastBalancePerDay.filter((balance) => {
+      if (
+        startDate !== null &&
+        moment(startDate).format(dateFmt) >
+          moment(balance.createdOn).format(dateFmt)
+      ) {
+        return false;
+      }
+      if (
+        endDate !== null &&
+        moment(endDate).format(dateFmt) <
+          moment(balance.createdOn).format(dateFmt)
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    setFilteredBalances(newFilteredBalances);
+  }, [balances, startDate, endDate]);
+
+  const values = filteredBalances.map((b) => b.balanceAmount);
+  const labels = filteredBalances.map((b) =>
+    moment(b.createdOn).format(dateFmt)
+  );
+
+  // const bgColors = filteredBalances.map(
+  //   () => `#${AppHelper.colorRandomizer()}`
+  // );
+
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: "Balance Trend",
+        data: values,
+        fill: true,
+        borderColor: "rgba(153, 102, 255, 0.5)",
+        backgroundColor: "rgba(153, 102, 255, 0.1)",
+        tension: 0.1,
+      },
+    ],
+  };
 
   return (
     <Container className="mt-5 pt-4 mb-5 container">
-      <h3>Expenses</h3>
+      <h3>Balance Trend</h3>
       <br />
       <p className="text-muted">SELECT DATE</p>
       <Row>
@@ -56,6 +95,7 @@ export default function index() {
           </Form.Group>
         </Col>
       </Row>
+      <Line data={data} />
     </Container>
   );
 }

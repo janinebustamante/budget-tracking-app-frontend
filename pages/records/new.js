@@ -9,14 +9,9 @@ export default function index() {
   const { addRecord } = useContext(RecordContext);
   const { categories } = useContext(CategoryContext);
 
-  const handleOnAdd = async ({
-    categoryId,
-    description,
-    amount,
-    createdOn,
-  }) => {
+  const handleOnAdd = async ({ categoryId, description, amount }) => {
     try {
-      await addRecord({ categoryId, description, amount, createdOn });
+      await addRecord({ categoryId, description, amount });
       Router.push("/records");
     } catch (err) {
       alert(err.message);
@@ -36,7 +31,6 @@ const AddRecord = ({ onAdd, categories }) => {
   const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
-  const [createdOn, setCreatedOn] = useState("");
 
   const [categoryType, setCategoryType] = useState("");
   const [categoryName, setCategoryName] = useState("");
@@ -47,7 +41,7 @@ const AddRecord = ({ onAdd, categories }) => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    onAdd({ categoryId, description, amount, createdOn });
+    onAdd({ categoryId, description, amount });
   };
 
   //for categoryName drop-down
@@ -67,7 +61,6 @@ const AddRecord = ({ onAdd, categories }) => {
         element.categoryName === categoryName
       ) {
         setCategoryId(element._id);
-        setCreatedOn(moment(new Date()).format("MMMM DD, YYYY"));
       }
     });
   }, [categoryType, categoryName]);
@@ -77,7 +70,7 @@ const AddRecord = ({ onAdd, categories }) => {
   return (
     <Card>
       <Card.Header>
-        <h3>Create New Record</h3>
+        <h3 className="text-center text-muted">Create New Record</h3>
       </Card.Header>
       <Card.Body>
         <Card.Text>

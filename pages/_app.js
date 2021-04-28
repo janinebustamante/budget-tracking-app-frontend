@@ -14,6 +14,7 @@ function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState(null);
   const [categories, setCategories] = useState([]);
   const [records, setRecords] = useState([]);
+  const [balances, setBalances] = useState([]);
 
   const [incomeCategoryIds, setIncomeCategoryIds] = useState([]);
   const [expenseCategoryIds, setExpenseCategoryIds] = useState([]);
@@ -36,6 +37,26 @@ function MyApp({ Component, pageProps }) {
       Router.push("/login");
     }
   }, []);
+
+  useEffect(() => {
+    let currentValue = 0;
+
+    const newBalances = records.map((record) => {
+      if (incomeCategoryIds.includes(record.categoryId)) {
+        currentValue = currentValue + record.amount;
+      } else {
+        currentValue = currentValue - record.amount;
+      }
+
+      return {
+        balanceAmount: currentValue,
+        createdOn: record.createdOn,
+        recordId: record._id,
+      };
+    });
+
+    setBalances(newBalances);
+  }, [records, incomeCategoryIds, expenseCategoryIds]);
 
   //save token to local storage
   useEffect(() => {
@@ -113,7 +134,7 @@ function MyApp({ Component, pageProps }) {
   }, [accessToken]);
 
   //adding records
-  const addRecord = async ({ categoryId, description, amount, createdOn }) => {
+  const addRecord = async ({ categoryId, description, amount }) => {
     const res = await fetch(`${AppHelper.API_URL}/records`, {
       method: "POST",
       headers: {
@@ -124,7 +145,6 @@ function MyApp({ Component, pageProps }) {
         categoryId,
         description,
         amount,
-        createdOn,
       }),
     });
 
@@ -166,7 +186,7 @@ function MyApp({ Component, pageProps }) {
             expenseCategoryIds,
           }}
         >
-          <RecordProvider value={{ records, addRecord }}>
+          <RecordProvider value={{ records, addRecord, balances }}>
             <NaviBar />
             <Container>
               <Component {...pageProps} />

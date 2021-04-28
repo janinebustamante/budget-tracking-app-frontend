@@ -15,7 +15,7 @@ import CategoryContext from "../../CategoryContext";
 import moment from "moment";
 
 export default function index() {
-  const { records } = useContext(RecordContext);
+  const { records, balances } = useContext(RecordContext);
   const { categories, incomeCategoryIds, expenseCategoryIds } = useContext(
     CategoryContext
   );
@@ -25,6 +25,7 @@ export default function index() {
       <h3>Records</h3>
       <Record
         records={records}
+        balances={balances}
         categories={categories}
         incomeCategoryIds={incomeCategoryIds}
         expenseCategoryIds={expenseCategoryIds}
@@ -35,6 +36,7 @@ export default function index() {
 
 const Record = ({
   records,
+  balances,
   categories,
   incomeCategoryIds,
   expenseCategoryIds,
@@ -52,6 +54,10 @@ const Record = ({
   //get categoryType and categoryName of the same categoryId
   const getCategory = (categoryId) => {
     return categories.find((c) => c._id === categoryId);
+  };
+
+  const getBalance = (recordId) => {
+    return balances.find((b) => b.recordId === recordId);
   };
 
   useEffect(() => {
@@ -164,9 +170,10 @@ const Record = ({
       </InputGroup>
       {recordsToShow.map((record) => {
         const category = getCategory(record.categoryId);
+        const balance = getBalance(record._id);
         return (
           <Card className="mt-3" key={record._id}>
-            <Card.Header>
+            <Card.Header style={{ textTransform: "capitalize" }}>
               {category.categoryType}
               <Button
                 variant="outline-danger"
@@ -188,18 +195,27 @@ const Record = ({
             <Card.Body>
               <Row>
                 <Col>
-                  <Card.Title>{record.description}</Card.Title>
-                  <Card.Text>{category.categoryName}</Card.Text>
+                  <Card.Title style={{ textTransform: "capitalize" }}>
+                    {record.description}
+                  </Card.Title>
+                  <Card.Text style={{ textTransform: "capitalize" }}>
+                    {category.categoryName}
+                  </Card.Text>
                   <Card.Text>
                     {moment(record.createdOn).format("MMMM DD, YYYY")}
                   </Card.Text>
                 </Col>
                 <Col className="text-right">
                   {category.categoryType === "income" ? (
-                    <Card.Text>+{record.amount}</Card.Text>
+                    <Card.Text style={{ color: "green" }}>
+                      +{record.amount}
+                    </Card.Text>
                   ) : (
-                    <Card.Text>-{record.amount}</Card.Text>
+                    <Card.Text style={{ color: "red" }}>
+                      -{record.amount}
+                    </Card.Text>
                   )}
+                  <Card.Text>{balance.balanceAmount}</Card.Text>
                 </Col>
               </Row>
             </Card.Body>
