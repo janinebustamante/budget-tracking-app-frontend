@@ -31,6 +31,14 @@ export default function NaviBar() {
                   Trend
                 </a>
               </Link>
+              <NavDropdown title="Cash Flow" id="basic-nav-dropdown">
+                <NavDropdown.Item href="/monthly-income">
+                  Monthly Income
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/monthly-expense">
+                  Monthly Expense
+                </NavDropdown.Item>
+              </NavDropdown>
               <NavDropdown title="Category Breakdown" id="basic-nav-dropdown">
                 <NavDropdown.Item href="/category-breakdown">
                   Income and Expense

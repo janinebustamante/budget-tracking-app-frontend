@@ -166,7 +166,25 @@ const Record = ({
         const category = getCategory(record.categoryId);
         return (
           <Card className="mt-3" key={record._id}>
-            <Card.Header>{category.categoryType}</Card.Header>
+            <Card.Header>
+              {category.categoryType}
+              <Button
+                variant="outline-danger"
+                href="/records/delete"
+                size="sm"
+                className="float-right ml-2"
+              >
+                Delete
+              </Button>
+              <Button
+                variant="outline-info"
+                href="/records/update"
+                size="sm"
+                className="float-right"
+              >
+                Update
+              </Button>
+            </Card.Header>
             <Card.Body>
               <Row>
                 <Col>
@@ -189,13 +207,5 @@ const Record = ({
         );
       })}
     </React.Fragment>
-  );
-};
-
-const Balance = () => {
-  return (
-    <div>
-      <label></label>
-    </div>
   );
 };

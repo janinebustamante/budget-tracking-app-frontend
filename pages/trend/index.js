@@ -1,6 +1,6 @@
 import { Container, Row, Col, Form } from "react-bootstrap";
 import { Line } from "react-chartjs-2";
-import { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import AppHelper from "../../app-helper";
 import moment from "moment";
 import RecordContext from "../../RecordContext";
@@ -8,50 +8,30 @@ import CategoryContext from "../../CategoryContext";
 
 export default function index() {
   const { records } = useContext(RecordContext);
-  const { categories } = useContext(CategoryContext);
-
   console.log(records);
-  console.log(categories);
 
-  const [amount, setAmount] = useState([]);
-  console.log(amount);
-  const [createdOn, setCreatedOn] = useState([]);
-  console.log(createdOn);
-  const [bgColors, setBgColors] = useState([]);
-  console.log(bgColors);
-
-  const [filteredRecord, setFilteredRecord] = useState([]);
   const [startDate, setStartDate] = useState([]);
+  console.log(startDate);
   const [endDate, setEndDate] = useState([]);
+  console.log(endDate);
+  // const [filteredRecord, setFilteredRecord] = useState([]);
+  // console.log(filteredRecord);
 
-  useEffect(() => {
-    const recordsAmount = records.map((r) => r.amount);
-    console.log(recordsAmount);
-    setAmount(recordsAmount);
-
-    const recordsCreatedOn = records.map((r) => r.createdOn);
-    console.log(recordsCreatedOn);
-    setCreatedOn(recordsCreatedOn);
-
-    setBgColors(records.map(() => `#${AppHelper.colorRandomizer()}`));
-    console.log(bgColors);
-  }, [records]);
-
-  const data = {
-    labels: createdOn,
-    datasets: [
-      {
-        label: "Balance Trend",
-        data: amount,
-        backgroundColor: bgColors,
-        hoverBackgroundColor: bgColors,
-      },
-    ],
-  };
+  // useEffect(() => {
+  //   const recordFilter = records.filter((r) => {
+  //     if (
+  //       moment(r.createdOn).format("YYYY-MM-DD") >= startDate &&
+  //       moment(r.createdOn).format("YYYY-MM-DD") <= endDate
+  //     ) {
+  //       return r;
+  //     }
+  //   });
+  //   setFilteredRecord(recordFilter);
+  // }, [records, startDate, endDate]);
 
   return (
     <Container className="mt-5 pt-4 mb-5 container">
-      <h3>Balance Trend</h3>
+      <h3>Expenses</h3>
       <br />
       <p className="text-muted">SELECT DATE</p>
       <Row>
@@ -76,7 +56,6 @@ export default function index() {
           </Form.Group>
         </Col>
       </Row>
-      <Line data={data} />
     </Container>
   );
 }

@@ -51,7 +51,7 @@ const LoginForm = () => {
   }
 
   const authenticateGoogleToken = (response) => {
-    console.log(response);
+    // console.log(response);
 
     fetch(`${AppHelper.API_URL}/users/verify-google-id-token`, {
       method: "POST",
