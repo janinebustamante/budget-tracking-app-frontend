@@ -13,24 +13,33 @@ import {
 import RecordContext from "../../RecordContext";
 import CategoryContext from "../../CategoryContext";
 import moment from "moment";
+import View from "../../components/View";
+import Swal from "sweetalert2";
 
 export default function index() {
-  const { records, balances } = useContext(RecordContext);
+  const { records, balances, deleteRecord } = useContext(RecordContext);
   const { categories, incomeCategoryIds, expenseCategoryIds } = useContext(
     CategoryContext
   );
 
   return (
-    <Container className="mt-5 pt-4 mb-5 container">
-      <h3>Records</h3>
-      <Record
-        records={records}
-        balances={balances}
-        categories={categories}
-        incomeCategoryIds={incomeCategoryIds}
-        expenseCategoryIds={expenseCategoryIds}
-      />
-    </Container>
+    <View title={"Records"}>
+      <Row className="justify-content-center">
+        <Col md="10">
+          <Container className="mb-5 container">
+            <h3>Records</h3>
+            <Record
+              records={records}
+              balances={balances}
+              categories={categories}
+              deleteRecord={deleteRecord}
+              incomeCategoryIds={incomeCategoryIds}
+              expenseCategoryIds={expenseCategoryIds}
+            />
+          </Container>
+        </Col>
+      </Row>
+    </View>
   );
 }
 
@@ -38,6 +47,7 @@ const Record = ({
   records,
   balances,
   categories,
+  deleteRecord,
   incomeCategoryIds,
   expenseCategoryIds,
 }) => {
@@ -60,6 +70,7 @@ const Record = ({
     return balances.find((b) => b.recordId === recordId);
   };
 
+  //filter search
   useEffect(() => {
     let categoryIds = [];
 
@@ -87,10 +98,9 @@ const Record = ({
           .includes(searchName.toLowerCase());
       });
     }
-
     // console.log(newRecordsToShow);
 
-    //function to sort records by createdOn
+    //function to sort records by createdOn (date)
     function compare(a, b) {
       if (a.createdOn < b.createdOn) {
         return 1;
@@ -106,7 +116,7 @@ const Record = ({
     setRecordsToShow(newRecordsToShow);
   }, [records, categories, typeSelected, searchName]);
 
-  //for balance
+  //get the balance
   useEffect(() => {
     let newCurrentBalance = 0;
     records.forEach((r) => {
@@ -118,6 +128,32 @@ const Record = ({
     });
     setCurrentBalance(newCurrentBalance);
   }, [records, categories]);
+
+  //delete record
+  const onDeleteHandler = async (record) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteRecord({ recordId: record._id });
+        Swal.fire(
+          "Deleted!",
+          `${record.description} has been deleted.`,
+          "success"
+        );
+      } catch (e) {
+        Swal.fire("Failed", `${e.message}`, "warning");
+      }
+    }
+  };
 
   return (
     <React.Fragment>
@@ -177,15 +213,15 @@ const Record = ({
               {category.categoryType}
               <Button
                 variant="outline-danger"
-                href="/records/delete"
                 size="sm"
                 className="float-right ml-2"
+                onClick={() => onDeleteHandler(record)}
               >
                 Delete
               </Button>
               <Button
                 variant="outline-info"
-                href="/records/update"
+                href={`/records/${record._id}`}
                 size="sm"
                 className="float-right"
               >

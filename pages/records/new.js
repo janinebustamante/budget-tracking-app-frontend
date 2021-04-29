@@ -1,9 +1,11 @@
 import Router from "next/router";
 import React, { useContext, useState, useEffect } from "react";
-import { Container, Button, Form, Card } from "react-bootstrap";
+import { Container, Button, Form, Card, Row, Col } from "react-bootstrap";
 import moment from "moment";
 import RecordContext from "../../RecordContext";
 import CategoryContext from "../../CategoryContext";
+import View from "../../components/View";
+import Swal from "sweetalert2";
 
 export default function index() {
   const { addRecord } = useContext(RecordContext);
@@ -19,11 +21,15 @@ export default function index() {
   };
 
   return (
-    <Container>
-      <br />
-      <br />
-      <AddRecord onAdd={handleOnAdd} categories={categories} />
-    </Container>
+    <View title={"Create Record"}>
+      <Row className="justify-content-center">
+        <Col xs md="6">
+          <Container>
+            <AddRecord onAdd={handleOnAdd} categories={categories} />
+          </Container>
+        </Col>
+      </Row>
+    </View>
   );
 }
 
@@ -120,7 +126,14 @@ const AddRecord = ({ onAdd, categories }) => {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button
+              variant="primary"
+              type="submit"
+              block
+              onClick={() => {
+                Swal.fire("Success", "New record added!", "success");
+              }}
+            >
               Add
             </Button>
           </Form>

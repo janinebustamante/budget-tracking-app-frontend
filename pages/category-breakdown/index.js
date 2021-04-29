@@ -5,6 +5,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Container, Row, Col, Form } from "react-bootstrap";
 import moment from "moment";
+import View from "../../components/View";
 
 export default function index() {
   const { records } = useContext(RecordContext);
@@ -57,33 +58,39 @@ export default function index() {
   };
 
   return (
-    <Container className="mt-5 pt-4 mb-5 container">
-      <h3>Category Breakdown</h3>
-      <br />
-      <p className="text-muted">SELECT DATE</p>
-      <Row>
-        <Col>
-          <Form.Group>
-            <Form.Label>From:</Form.Label>
-            <Form.Control
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group>
-            <Form.Label>To:</Form.Label>
-            <Form.Control
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </Form.Group>
+    <View title={"Category Breakdown"}>
+      <Row className="justify-content-center">
+        <Col md="10">
+          <Container className="mb-5 container">
+            <h3>Category Breakdown</h3>
+            <br />
+            <p className="text-muted">SELECT DATE</p>
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>From:</Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>To:</Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Pie data={data} />;
+          </Container>
         </Col>
       </Row>
-      <Pie data={data} />;
-    </Container>
+    </View>
   );
 }

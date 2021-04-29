@@ -1,13 +1,14 @@
-import React from 'react'
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import NaviBar from '../components/NaviBar'
-import Banner from '../components/Banner';
+import React from "react";
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
+import NaviBar from "../components/NaviBar";
+import Banner from "../components/Banner";
+import View from "../components/View";
 
-export default function Home() {
+export default function index() {
   return (
-    <React.Fragment>
+    <View title={"Budget Buddy"}>
       <Banner />
-    </React.Fragment>
-  )
+    </View>
+  );
 }

@@ -41,14 +41,14 @@ export default function NaviBar() {
               </NavDropdown>
               <NavDropdown title="Category Breakdown" id="basic-nav-dropdown">
                 <NavDropdown.Item href="/category-breakdown">
-                  Income and Expense
+                  Incomes and Expenses
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/category-breakdown/income">
                   Incomes
                 </NavDropdown.Item>
                 <NavDropdown.Item href="/category-breakdown/expense">
-                  Expense
+                  Expenses
                 </NavDropdown.Item>
               </NavDropdown>
               <NavDropdown title={user.firstName} id="basic-nav-dropdown">

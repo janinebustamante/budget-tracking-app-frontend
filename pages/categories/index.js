@@ -1,22 +1,29 @@
 import Router from "next/router";
 import React, { useContext, useState, useEffect } from "react";
-import { Container, Button, Table, Form } from "react-bootstrap";
+import { Container, Button, Table, Form, Row, Col } from "react-bootstrap";
 import CategoryContext from "../../CategoryContext";
+import View from "../../components/View";
 
 export default function index() {
   const { categories } = useContext(CategoryContext);
 
   return (
-    <Container className="mt-5 pt-4 mb-5 container">
-      <h3>Categories</h3>
-      <Button
-        variant="primary mb-3"
-        onClick={() => Router.push("/categories/new")}
-      >
-        Add
-      </Button>
-      <CategoryTable categories={categories} />
-    </Container>
+    <View title={"Categories"}>
+      <Row className="justify-content-center">
+        <Col md="10">
+          <Container className="mb-5 container">
+            <h3>Categories</h3>
+            <Button
+              variant="primary mb-3"
+              onClick={() => Router.push("/categories/new")}
+            >
+              Add
+            </Button>
+            <CategoryTable categories={categories} />
+          </Container>
+        </Col>
+      </Row>
+    </View>
   );
 }
 

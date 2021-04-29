@@ -5,6 +5,7 @@ import UserContext from "../../UserContext";
 import AppHelper from "../../app-helper";
 import Router from "next/router";
 import { GoogleLogin } from "react-google-login";
+import Swal from "sweetalert2";
 
 export default function index() {
   return (
@@ -45,7 +46,7 @@ const LoginForm = () => {
         } else {
           // localStorage.setItem('token', data.accessToken);
           setAccessToken(data.accessToken);
-          alert("Successfully logged in!");
+          Swal.fire("Welcome, buddy!", "You are now logged in", "success");
         }
       });
   }
@@ -71,14 +72,14 @@ const LoginForm = () => {
           setAccessToken(data.accessToken);
         } else {
           if (data.error === "google-auth-error") {
-            alert(
+            Swal.fire(
               "Google Auth Error",
               "Google authentication procedure failed.",
               "error"
             );
             //3 arguments: title, text, icon(error/success)
           } else if (data.error === "login-type-error") {
-            alert(
+            Swal.fire(
               "Login Type Error",
               "You may have registered through a different login procedure.",
               "error"
@@ -155,9 +156,12 @@ const LoginForm = () => {
             />
           </Form>
           <hr />
-          <Button href="/register" block variant="success">
-            Create New Account
+          <Button href="/register" block variant="success" disabled>
+            Be my buddy! Create an account now!
           </Button>
+          {/* <p className="text-center text-muted">
+            Be my buddy! Create an account now!
+          </p> */}
         </Card.Body>
       </Card>
     </Container>

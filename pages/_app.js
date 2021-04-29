@@ -157,6 +157,25 @@ function MyApp({ Component, pageProps }) {
     }
   };
 
+  //delete a record
+  const deleteRecord = async ({ recordId }) => {
+    const res = await fetch(`${AppHelper.API_URL}/records/${recordId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      const newRecords = records.filter((record) => record._id !== recordId);
+      setRecords(newRecords);
+    } else {
+      throw new Error(`Failed to create a record: ${data.err}`);
+    }
+  };
+
   //category ids with income and expense
   useEffect(() => {
     // console.log(categories);
@@ -186,7 +205,9 @@ function MyApp({ Component, pageProps }) {
             expenseCategoryIds,
           }}
         >
-          <RecordProvider value={{ records, addRecord, balances }}>
+          <RecordProvider
+            value={{ records, addRecord, balances, deleteRecord }}
+          >
             <NaviBar />
             <Container>
               <Component {...pageProps} />

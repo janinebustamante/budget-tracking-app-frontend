@@ -1,9 +1,10 @@
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { Bar } from "react-chartjs-2";
 import CategoryContext from "../../CategoryContext";
 import RecordContext from "../../RecordContext";
+import View from "../../components/View";
 
 export default function index() {
   const { records } = useContext(RecordContext);
@@ -111,10 +112,16 @@ export default function index() {
   };
 
   return (
-    <Container className="mt-5 pt-4 mb-5 container">
-      <h3>Monthly Expense</h3>
-      <br />
-      <Bar data={data} />
-    </Container>
+    <View title={"Cash Flow: Monthly Expense"}>
+      <Row className="justify-content-center">
+        <Col md="10">
+          <Container className="mb-5 container">
+            <h3>Monthly Expense</h3>
+            <br />
+            <Bar data={data} />
+          </Container>
+        </Col>
+      </Row>
+    </View>
   );
 }

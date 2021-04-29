@@ -3,8 +3,10 @@ import { Container, Form, Row, Col } from "react-bootstrap";
 import { Pie } from "react-chartjs-2";
 import CategoryContext from "../../CategoryContext";
 import RecordContext from "../../RecordContext";
+import View from "../../components/View";
 import moment from "moment";
 import AppHelper from "../../app-helper";
+import Swal from "sweetalert2";
 
 export default function Expense() {
   const { records } = useContext(RecordContext);
@@ -79,33 +81,39 @@ export default function Expense() {
   };
 
   return (
-    <Container className="mt-5 pt-4 mb-5 container">
-      <h3>Expenses</h3>
-      <br />
-      <p className="text-muted">SELECT DATE</p>
-      <Row>
-        <Col>
-          <Form.Group>
-            <Form.Label>From:</Form.Label>
-            <Form.Control
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group>
-            <Form.Label>To:</Form.Label>
-            <Form.Control
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </Form.Group>
+    <View title={"Category Breakdown: Expense"}>
+      <Row className="justify-content-center">
+        <Col md="10">
+          <Container className="mb-5 container">
+            <h3>Expenses</h3>
+            <br />
+            <p className="text-muted">SELECT DATE</p>
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>From:</Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>To:</Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Pie data={data} />
+          </Container>
         </Col>
       </Row>
-      <Pie data={data} />
-    </Container>
+    </View>
   );
 }
