@@ -3,6 +3,7 @@ import { Container, Form, Button, Row, Col, Card } from "react-bootstrap";
 import Router from "next/router";
 import AppHelper from "../../app-helper";
 import View from "../../components/View";
+import Swal from "sweetalert2";
 
 export default function index() {
   return (
@@ -45,7 +46,7 @@ const RegisterForm = () => {
         console.log(data);
 
         if (data.err) {
-          alert(data.err);
+          Swal.fire("Oh no!", `${data.err}`, "error");
         } else {
           setFirstName("");
           setLastName("");
@@ -53,7 +54,12 @@ const RegisterForm = () => {
           setPassword1("");
           setPassword2("");
 
-          alert("Thank you for registering with us!");
+          // alert("Thank you for registering with us!");
+          Swal.fire(
+            "Registration Successful!",
+            "You are now registered.",
+            "success"
+          );
 
           Router.push("/login");
         }

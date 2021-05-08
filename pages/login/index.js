@@ -42,7 +42,7 @@ const LoginForm = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.err) {
-          alert(data.err);
+          Swal.fire("Oh no!", `${data.err}`, "error");
         } else {
           // localStorage.setItem('token', data.accessToken);
           setAccessToken(data.accessToken);
@@ -156,12 +156,12 @@ const LoginForm = () => {
             />
           </Form>
           <hr />
-          <Button href="/register" block variant="success" disabled>
+          {/* <Button href="/register" block variant="success" disabled>
             Be my buddy! Create an account now!
-          </Button>
-          {/* <p className="text-center text-muted">
+          </Button> */}
+          <p className="text-center text-muted">
             Be my buddy! Create an account now!
-          </p> */}
+          </p>
         </Card.Body>
       </Card>
     </Container>
