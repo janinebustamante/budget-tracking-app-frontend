@@ -12,7 +12,7 @@ export default function MonthlyIncome() {
   const { incomeCategoryIds } = useContext(CategoryContext);
   // console.log(incomeCategoryIds);
 
-  const [months, setMonths] = useState([
+  const months = [
     "January",
     "February",
     "March",
@@ -25,7 +25,7 @@ export default function MonthlyIncome() {
     "October",
     "November",
     "December",
-  ]);
+  ];
   const [monthlyIncome, setMonthlyIncome] = useState([]);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function MonthlyIncome() {
     });
     setMonthlyIncome(perMonthTotalIncome);
     // console.log(monthlyIncome);
-  }, [records]);
+  }, [records, incomeCategoryIds]);
 
   const data = {
     labels: months,

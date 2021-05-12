@@ -12,7 +12,7 @@ export default function index() {
   const { expenseCategoryIds } = useContext(CategoryContext);
   // console.log(expenseCategoryIds);
 
-  const [months, setMonths] = useState([
+  const months = [
     "January",
     "February",
     "March",
@@ -25,7 +25,7 @@ export default function index() {
     "October",
     "November",
     "December",
-  ]);
+  ];
   const [monthlyExpense, setMonthlyExpense] = useState([]);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function index() {
     });
     setMonthlyExpense(perMonthTotalExpense);
     // console.log(monthlyExpense);
-  }, [records]);
+  }, [records, expenseCategoryIds]);
 
   const data = {
     labels: months,
